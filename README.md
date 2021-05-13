@@ -1,16 +1,17 @@
-# VAE
+# EffecientNet
 
-Overview of different types of autoencoders.
+My own implementation of EffecientNets. 
 
-In this repository, we shall create a number of different types ofautoencoders. Some of the autoencoders are written in 
-TensorFlow, and some in pyTorch. Care has been taken to make sure that the modelsare easy to understand rather than whether
-they are efficient or accurate. Also most of thiscode does not follow good software engineering practices whatsoever. This 
-repo is not intended tobe production quality code. This is expected to be experimental software, that can form the basis for
-rapid prototyping and experimentation.
+This implementation is not intended to be a replacement of the original verison of EffecientNet
+that is present in the paper, but rather a very simple implementation that is easy to read,
+understand and experiment with. 
 
-Of special note is the fact that none of this code uses any form of regularization, batch normalization, and the like. Neither
-does this code contain any information for saving models, creating checkpoints, loading from checkpoints, etc. If you wish to
-use any of these features, you will need to add them yourself.
+The idea behind this implementation is that instead of needing to tweaking the codeextensively, 
+it should be relatively easy to tweak the code through configuraiton files. This will then
+allow for further optimizaiton through Neural Architecture Search.
+
+This is not intended to be production-level code, and no guarantees are made of its reliability.
+Use it at your own risk.
 
 
 # Examples
@@ -20,10 +21,8 @@ The following examples are present
 
 |         command        | model | backend | data | comments |
 |------------------------|-------|---------|------|----------|
-|`python3 testTFvae.py`  | [TF/VAE.py](https://github.com/sankhaMukherjee/vae/blob/master/models/TF/VAE.py) | TensorFlow | MNIST | Both the encoder and the decoder are `Dense` layers. Reconstruction is simply based upon a `sigmoid_cross_entropy_with_logits`. MNIST digits are unraveled into a 784 dimensional vector. |
-|`python3 testTFcvae.py`  | [TF/CVAE.py](https://github.com/sankhaMukherjee/vae/blob/master/models/TF/CVAE.py) | TensorFlow | MNIST | Conditional variational autoencoder. Both the encoder and the decoder are `Dense` layers. Reconstruction is simply based upon a `sigmoid_cross_entropy_with_logits`. MNIST digits are unraveled into a 784 dimensional vector. |
-|`python3 testTFcoercevae.py`  | [TF/coerceVAE.py](https://github.com/sankhaMukherjee/vae/blob/master/models/TF/coerceVAE.py) | TensorFlow | MNIST | coerced variational autoencoder. Both the encoder and the decoder are `Dense` layers. Reconstruction is simply based upon a `sigmoid_cross_entropy_with_logits`. MNIST digits are unraveled into a 784 dimensional vector. In this variation, there is some coersion while creating the latent space so that there is greater separation between members of the group that are known to be in different groups. |
-|`python3 testTFConvVAE.py`  | [TF/ConvVAE.py](https://github.com/sankhaMukherjee/vae/blob/master/models/TF/ConvVAE.py) | TensorFlow | MNIST | Convolutional variaitonal autoencoder. Instead of assuming that the image is based upon a flattened representation, this method simply uses a set of convolution layers as part of the encoder and the decoder. |
+|                        |       |         |      |          |
+
 
 # Requirements
 
