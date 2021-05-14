@@ -1,10 +1,10 @@
 import tensorflow as tf
-
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 from datetime import datetime as dt
 import os, json
+import numpy as np
 
 class Experiment:
 
@@ -51,6 +51,16 @@ class Experiment:
         self.stepNumber += 1
 
         return loss.numpy()
+
+    def eval(self, x, y):
+
+        yHat = self.model.predict(x)
+        loss = np.mean((y - yHat)**2)
+
+        with self.scalarWriter.as_default():
+            tf.summary.scalar('testing loss', data=loss, step=self.stepNumber)
+
+        return loss
 
     def createMetaData(self):
 

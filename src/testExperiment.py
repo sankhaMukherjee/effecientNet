@@ -42,10 +42,11 @@ def main():
         exp.stepNumber  = 0
 
         for step, (x, y) in enumerate(train_dataset):
-            loss = exp.step(x, y)
+            loss     = exp.step(x, y)
 
             if step % otherParams['printEvery'] == 0:
                 print(f'{epoch:05d} | {step:05d} | {loss:10.4e} ')
+                testLoss = exp.eval(x_test, y_test)
             
             if step % otherParams['chkptEvery'] == 0:
                 exp.checkPoint()
