@@ -1,0 +1,16 @@
+{
+    "ModelParams" : {
+        "layers": [10, 5, 1],
+        "activations": ["tanh", "tanh", null],
+        "name" : "TestName"
+    },
+
+    "OptimizerParams" : {
+        "learning_rate" : 0.001
+    },
+    "OtherParams" : {
+        "BATCHSIZE"  : 128,
+        "EPOCHS"     : 2,
+        "printEvery" : 10
+    }
+}
