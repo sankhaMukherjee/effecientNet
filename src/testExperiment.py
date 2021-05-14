@@ -35,18 +35,28 @@ def main():
     # ------------- Save the graph -------------------------------
     exp.createModelSummary( x_test )
 
-    # ------------- Run the Experiment -------------------------------
+    # ------------- Run the Experiment ---------------------------
     for epoch in range( otherParams['EPOCHS'] ):
 
+        exp.epoch       = epoch
+        exp.stepNumber  = 0
+
         for step, (x, y) in enumerate(train_dataset):
-            loss = exp.step(x, y, step)
+            loss = exp.step(x, y)
 
             if step % otherParams['printEvery'] == 0:
                 print(f'{epoch:05d} | {step:05d} | {loss:10.4e} ')
+            
+            if step % otherParams['chkptEvery'] == 0:
+                exp.checkPoint()
+
 
         print(f'\n {epoch:05d} | {step:05d} | {loss:10.4e} \n')
 
     
+    # ------------- Save the model ---------------------------
+    exp.saveModel()
+
 
     
 

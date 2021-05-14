@@ -19,9 +19,14 @@ class TestModel(Model):
 
     def call(self, x):
 
-        result = x*1
-        for l in self.denseLayers:
-            result = l(result)
-
+        
+        with tf.name_scope('input'):
+            result = x*1
+        
+        with tf.name_scope('denseOperations'):
+            for i, l in enumerate(self.denseLayers):
+                with tf.name_scope(f'denseOperation-{i:03d}'):
+                    result = l(result)
+            
         return  result
 

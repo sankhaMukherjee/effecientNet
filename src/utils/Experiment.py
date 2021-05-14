@@ -15,31 +15,27 @@ class Experiment:
         self.model      = model
         self.optimizer  = optimizer
         
-        self.exptFolder = os.path.join( exptConfig['OtherParams']['exptBaseFolder'], self.now )
+        self.exptFolder  = os.path.join( exptConfig['OtherParams']['exptBaseFolder'], self.now )
+        self.modelFolder = os.path.join( self.exptFolder, 'model' )
+        self.chkptFolder = os.path.join( self.exptFolder, 'checkpoints' )
 
-        # # Save the entire model
-        # # ------------------------
-        # modelFolder = os.path.join(self.exptFolder, 'model')
-        # os.makedirs( modelFolder )
-        # self.model.save( modelFolder )
+        os.makedirs( self.modelFolder, exist_ok=True )
+        os.makedirs( self.chkptFolder, exist_ok=True )
+
+        self.stepNumber  = 0
+        self.epoch       = 0
 
         # All the logs go here ...
         # ------------------------
-
         self.createMetaData()
         
-        self.logDir       = os.path.join(exptConfig['OtherParams']['exptBaseFolder'], self.now)
+        self.logDir       = os.path.join(self.exptFolder, 'logs')
         self.scalarWriter = tf.summary.create_file_writer( os.path.join( self.logDir, 'scalars', 'metrics' ) )
         self.graphWriter  = tf.summary.create_file_writer( os.path.join( self.logDir, 'graph' ) )
 
-
-        # Generate a model graph 
-        # ---------------------------
-        
-
         return
 
-    def step(self, x, y, stepNumber=0):
+    def step(self, x, y):
 
         with tf.GradientTape() as tape:
 
@@ -50,7 +46,9 @@ class Experiment:
             self.optimizer.apply_gradients(zip( grads, self.model.trainable_weights ))
 
         with self.scalarWriter.as_default():
-            tf.summary.scalar('training loss', data=loss, step=stepNumber)
+            tf.summary.scalar('training loss', data=loss, step=self.stepNumber)
+
+        self.stepNumber += 1
 
         return loss.numpy()
 
@@ -70,5 +68,23 @@ class Experiment:
         with self.graphWriter.as_default():
             tf.summary.trace_export('name', step=0)
         tf.summary.trace_off()
+
+    def saveModel(self):
+
+        try:
+            self.model.save( self.modelFolder )
+        except Exception as e:
+            print(f'Unable to save the model: {e}')
+
+        return
+
+    def checkPoint(self):
+        try:
+            epoch = self.epoch
+            step = self.stepNumber
+            self.model.save_weights( os.path.join( self.chkptFolder, f'{epoch:07d}-{step:07d}' ) )
+        except Exception as e:
+            print(f'Unable to checkpoint: {self.stepNumber}: {e}')
+        return
 
 
