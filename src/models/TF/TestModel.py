@@ -13,7 +13,7 @@ class TestModel(Model):
 
         super( TestModel, self ).__init__(name = name)
         
-        self.denseLayers = [ Dense(l, activation=a) for i, (l, a) in enumerate(zip(layers, activations))]
+        self.denseLayers = [ Dense(l, activation=a, name=f'Dense-{i:03d}') for i, (l, a) in enumerate(zip(layers, activations))]
 
         return
 

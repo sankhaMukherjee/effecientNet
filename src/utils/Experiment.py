@@ -17,15 +17,25 @@ class Experiment:
         
         self.exptFolder = os.path.join( exptConfig['OtherParams']['exptBaseFolder'], self.now )
 
+        # # Save the entire model
+        # # ------------------------
+        # modelFolder = os.path.join(self.exptFolder, 'model')
+        # os.makedirs( modelFolder )
+        # self.model.save( modelFolder )
+
         # All the logs go here ...
         # ------------------------
 
         self.createMetaData()
         
-        # self.logFolderBase = logFolderBase
-        # self.logDir        = os.path.join(logFolderBase, 'scalars', self.now)
+        self.logDir       = os.path.join(exptConfig['OtherParams']['exptBaseFolder'], self.now)
+        self.scalarWriter = tf.summary.create_file_writer( os.path.join( self.logDir, 'scalars', 'metrics' ) )
+        self.graphWriter  = tf.summary.create_file_writer( os.path.join( self.logDir, 'graph' ) )
 
-        # self.fileWriter    = tf.summary.create_file_writer( os.path.join( self.logDir, 'metrics' ) )
+
+        # Generate a model graph 
+        # ---------------------------
+        
 
         return
 
@@ -39,8 +49,8 @@ class Experiment:
             grads = tape.gradient(loss, self.model.trainable_weights)
             self.optimizer.apply_gradients(zip( grads, self.model.trainable_weights ))
 
-        # with self.fileWriter.as_default()
-        #     tf.summary.scalar('training loss', data=learning_rate, step=stepNumber)
+        with self.scalarWriter.as_default():
+            tf.summary.scalar('training loss', data=loss, step=stepNumber)
 
         return loss.numpy()
 
@@ -53,5 +63,12 @@ class Experiment:
             json.dump( self.exptConfig, fOut )
 
         return
+
+    def createModelSummary(self, x):
+        tf.summary.trace_on(graph=True)
+        self.model.predict(x)
+        with self.graphWriter.as_default():
+            tf.summary.trace_export('name', step=0)
+        tf.summary.trace_off()
 
 

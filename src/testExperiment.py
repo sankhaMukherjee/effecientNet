@@ -31,16 +31,24 @@ def main():
     train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
     train_dataset = train_dataset.shuffle(buffer_size=2048).batch(otherParams['BATCHSIZE'])
 
+    
+    # ------------- Save the graph -------------------------------
+    exp.createModelSummary( x_test )
+
     # ------------- Run the Experiment -------------------------------
     for epoch in range( otherParams['EPOCHS'] ):
 
         for step, (x, y) in enumerate(train_dataset):
-            loss = exp.step(x, y)
+            loss = exp.step(x, y, step)
 
             if step % otherParams['printEvery'] == 0:
                 print(f'{epoch:05d} | {step:05d} | {loss:10.4e} ')
 
         print(f'\n {epoch:05d} | {step:05d} | {loss:10.4e} \n')
+
+    
+
+    
 
     return
 
