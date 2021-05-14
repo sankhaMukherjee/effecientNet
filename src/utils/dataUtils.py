@@ -1,6 +1,10 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
+import tensorflow_datasets as tfds
+import numpy as np
+
+from tqdm import tqdm
 
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
@@ -21,3 +25,74 @@ def getMNISTData(reshape=True):
 
     return (x_train, y_train), (x_test, y_test)
     
+def generateImageNette(folder = '/home/sankha/Documents/mnt/hdd01/data/imagenette2-160'):
+
+    builder = tfds.folder_dataset.ImageFolder(root_dir = folder)
+    print(builder.info)
+    
+    newFolder = folder + '-160'
+    os.makedirs( newFolder, exist_ok=True )
+
+    # ------------------------------------------------
+    # Generate training data 
+    # ------------------------------------------------
+    trainDataX = []
+    trainDataY = []
+
+    trainDataset = builder.as_dataset(split='train')
+    for d in tqdm(trainDataset, total = 9469):
+
+        im = d['image'].numpy().astype('float32')/255
+        im = im[:160, :160, :]
+        label = d['label'].numpy().astype('float32')
+
+        trainDataX.append(im)
+        trainDataY.append(label)
+
+    trainDataX = np.array(trainDataX)
+    trainDataY = np.array(trainDataY)
+
+    with open(os.path.join(newFolder, 'trainX.npy'), 'wb') as fOut:
+        np.save( fOut, trainDataX)
+    with open(os.path.join(newFolder, 'trainY.npy'), 'wb') as fOut:
+        np.save( fOut, trainDataY)
+
+    # ------------------------------------------------
+    # Generate testing data 
+    # ------------------------------------------------
+    trainDataX = []
+    trainDataY = []
+
+    trainDataset = builder.as_dataset(split='val')
+    for d in tqdm(trainDataset, total = 3925):
+
+        im = d['image'].numpy().astype('float32')/255
+        im = im[:160, :160, :]
+        label = d['label'].numpy().astype('float32')
+
+        trainDataX.append(im)
+        trainDataY.append(label)
+
+    trainDataX = np.array(trainDataX)
+    trainDataY = np.array(trainDataY)
+
+    print(trainDataY.shape)
+
+    with open( os.path.join(newFolder, 'testX.npy'), 'wb' ) as fOut:
+        np.save( fOut, trainDataX)
+    with open( os.path.join(newFolder, 'testY.npy'), 'wb' ) as fOut:
+        np.save( fOut, trainDataY)
+
+        
+    return
+
+
+def main():
+
+    generateImageNette()
+    
+
+    return
+
+if __name__ == "__main__":
+    main()

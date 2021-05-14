@@ -53,7 +53,6 @@ def main():
 
 
         print(f'\n {epoch:05d} | {step:05d} | {loss:10.4e} \n')
-
     
     # ------------- Save the model ---------------------------
     exp.saveModel()

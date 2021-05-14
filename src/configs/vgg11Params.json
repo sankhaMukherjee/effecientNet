@@ -1,0 +1,32 @@
+{
+    "ModelParams": {
+        
+        "name": "VGG11",
+        
+        "convLayers" : [
+            { "nFilters": 64,  "nConvs": 1, "name": "convBlock_001" }, 
+            { "nFilters": 128, "nConvs": 1, "name": "convBlock_002" }, 
+            { "nFilters": 256, "nConvs": 2, "name": "convBlock_003" }, 
+            { "nFilters": 512, "nConvs": 2, "name": "convBlock_004" }, 
+            { "nFilters": 512, "nConvs": 2, "name": "convBlock_005" }
+        ],
+
+        "denseLayers" : [
+            { "units":4096, "activation":"relu", "use_bias":true, "name": "FC-4096-1"},
+            { "units":4096, "activation":"relu", "use_bias":true, "name": "FC-4096-2"},
+            { "units":1000, "activation": null , "use_bias":true, "name": "FC-4096-3"}
+        ]
+    },
+
+    "OptimizerParams": {
+        "learning_rate": 0.001
+    },
+    
+    "OtherParams": {
+        "BATCHSIZE": 128,
+        "EPOCHS": 2,
+        "printEvery": 10,
+        "chkptEvery": 10,
+        "exptBaseFolder": "../exptLogs"
+    }
+}
