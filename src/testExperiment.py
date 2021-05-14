@@ -24,7 +24,7 @@ def main():
     # ------------- Generate an Experiment --------------------------
     model = TestModel( **modelParams )
     opt   = Adam( **optimizerParams )
-    exp   = Experiment( model, opt )
+    exp   = Experiment( model, opt, baseConfigs )
 
     # ------------- Generate the Data -------------------------------
     (x_train, y_train), (x_test, y_test) = dU.getMNISTData()
