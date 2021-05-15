@@ -5,6 +5,7 @@ import tensorflow_datasets as tfds
 import numpy as np
 
 from tqdm import tqdm
+from sklearn.preprocessing import OneHotEncoder
 
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
@@ -25,7 +26,11 @@ def getMNISTData(reshape=True):
 
     return (x_train, y_train), (x_test, y_test)
     
-def generateImageNette(folder = '/home/sankha/Documents/mnt/hdd01/data/imagenette2-160'):
+# ----------------------------------------------------------------------
+# Imagenette2-160
+# ----------------------------------------------------------------------
+
+def generateImageNette(folder):
 
     builder = tfds.folder_dataset.ImageFolder(root_dir = folder)
     print(builder.info)
@@ -86,10 +91,36 @@ def generateImageNette(folder = '/home/sankha/Documents/mnt/hdd01/data/imagenett
         
     return
 
+def convertLabelsToOHE(original, categories='auto'):
+
+    ohe    = OneHotEncoder(categories=categories)
+    ohe.fit(original.reshape(-1,1))
+    result = ohe.transform(original.reshape(-1,1)).toarray()
+    
+    return result 
+
+def convertFilesToOHE(folder, fileName, categories):
+
+    data = np.load(os.path.join(folder, fileName))
+    data = convertLabelsToOHE( data, categories )
+
+    newFileName = fileName.replace('.npy', '_OHE.npy')
+    with open( os.path.join(folder, newFileName), 'wb') as fOut:
+        np.save(fOut, data)
+
+    return
 
 def main():
 
-    generateImageNette()
+    folder    = '/home/sankha/Documents/mnt/hdd01/data/imagenette2-160'
+    folderNew = folder + '-160'
+    # generateImageNette(folder)
+
+    categories = [list(range(10))]
+    convertFilesToOHE( folderNew, 'trainY.npy', categories )
+    convertFilesToOHE( folderNew, 'testY.npy', categories )
+
+
     
 
     return
