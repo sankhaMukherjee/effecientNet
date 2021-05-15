@@ -7,7 +7,7 @@ import tensorflow as tf
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
-from utils.Experiment             import Experiment
+from utils.ExperimentClassify     import ExperimentClassify
 from utils                        import dataUtils  as dU
 from models.TF.VGG                import VGG
 from tensorflow.keras.optimizers  import Adam
@@ -15,33 +15,33 @@ from tensorflow.keras.optimizers  import Adam
 
 def main():
 
+    name = 'VGG-11'
+
     # ------------- Generate the Parameters --------------------------
+    print('------------- [Generating the basic parameters] --------------')
     baseConfigs     = json.load(open('configs/vgg11Params.json'))
     modelParams     = baseConfigs['ModelParams']
     optimizerParams = baseConfigs['OptimizerParams']
     otherParams     = baseConfigs['OtherParams']
 
-    
     # ------------- Generate the Data -------------------------------
+    print('------------- [Preparing the data] ---------------------------')
     (x_train, y_train), (x_test, y_test) = dU.getImageNetteData()
-
-    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
-
     train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    train_dataset = train_dataset.shuffle(buffer_size=2048).batch(otherParams['BATCHSIZE'])
-    return
-    
+    train_dataset = train_dataset.batch(otherParams['BATCHSIZE'])    
 
     # ------------- Generate an Experiment --------------------------
-    model = TestModel( **modelParams )
+    print('------------- [Preparing the Experiment] ---------------------')
+    model = VGG( modelParams, name=modelParams['name'] )
     opt   = Adam( **optimizerParams )
-    exp   = Experiment( model, opt, baseConfigs )
-
+    exp   = ExperimentClassify( model, opt, baseConfigs )
 
     # ------------- Save the graph -------------------------------
-    exp.createModelSummary( x_test )
+    print('------------- [Creating the model summary] ------------------')
+    exp.createModelSummary( x_test[:1,:,:,:] )
 
     # ------------- Run the Experiment ---------------------------
+    print('------------- [Starting a run] -----------------------------')
     for epoch in range( otherParams['EPOCHS'] ):
 
         exp.epoch       = epoch
@@ -52,10 +52,10 @@ def main():
 
             if step % otherParams['printEvery'] == 0:
                 print(f'{epoch:05d} | {step:05d} | {loss:10.4e} ')
-                testLoss = exp.eval(x_test, y_test)
+                # testLoss = exp.eval(x_test, y_test)
             
-            if step % otherParams['chkptEvery'] == 0:
-                exp.checkPoint()
+            # if step % otherParams['chkptEvery'] == 0:
+            #     exp.checkPoint()
 
 
         print(f'\n {epoch:05d} | {step:05d} | {loss:10.4e} \n')

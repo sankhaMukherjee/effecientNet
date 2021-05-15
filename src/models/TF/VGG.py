@@ -5,56 +5,36 @@ tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, Flatten
 from tensorflow.keras.losses import CategoricalCrossentropy
-from tensorflow.keras import Model, layers
+from tensorflow.keras import Model, layers, Sequential
 
-class ConvGroup2(layers.Layer):
+class ConvGroup(layers.Layer):
 
-    def __init__(self, nFilters=64, nConvs = 1, name='ConvGroup1'):
+    def __init__(self, nFilters=64, nConvs = 1, name='ConvGroup'):
 
-        super(self, CongGrpup1).__init__(name=name)
+        super(ConvGroup, self).__init__(name=name)
 
-        self.convLayers = [ Conv2D(  filters=nFilters, kernel_size=(3,3), padding='same', 
-                                     activation='relu', name=f'{name}-conv_{i+1}' )   for i in range(nConvs)]
-        self.maxPool = MaxPool2D((2,2), fame=f'{name}-maxpool')
+        self.convLayers = Sequential([ Conv2D(  filters=nFilters, kernel_size=(3,3), padding='same', activation='relu', ) for i in range(nConvs)])
+        self.maxPool    = MaxPool2D((2,2), name=f'{name}-maxpool')
+        self.all        = Sequential([ self.convLayers, self.maxPool ], name=name)
 
         return
     
     def call(self, x):
-
-        result = 1*x
-        
-        # Implement the conv layers
-        # --------------------------
-        for c in self.convLayers:
-            result = c( result )
-        
-        result = self.maxPool( result )
-
-        return result
+        return self.all(x)
 
 class VGG(Model):
 
     def __init__(self, params, name='VGG'):
 
-        super(self, VGG).__init__(name=name)
+        super( VGG, self).__init__(name=name)
 
-        self.convLayers  = [ Conv2D(*p) for p in params['convLayers']]
-        self.denseLayers = [ Dense(*p)  for p in params['denseLayers']]
+        self.convLayers  = Sequential([ ConvGroup(**p) for p in params['convLayers']], name='ConvBlocks')
         self.flatten     = Flatten()
+        self.denseLayers = Sequential([ Dense(**p)  for p in params['denseLayers']], name='DenseBlocks')
+        self.all         = Sequential([ self.convLayers, self.flatten, self.denseLayers ], name=name)
         
         return
 
     def call(self, x):
-
-        result = x*1
-        
-        for c in self.convLayers:
-            result = c(result)
-
-        result = self.flatte(result)
-
-        for d in self.denseLayers:
-            result = d(result)
-
-        return result 
+        return self.all(x)
 
