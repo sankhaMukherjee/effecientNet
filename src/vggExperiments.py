@@ -5,6 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 
 physical_devices = tf.config.list_physical_devices('GPU')
+print(physical_devices)
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 from utils.ExperimentClassify     import ExperimentClassify
@@ -49,25 +50,27 @@ def main():
     print('------------- [Starting a run] -----------------------------')
     for epoch in range( otherParams['EPOCHS'] ):
 
+        exp.catAccTrain.reset_states()
         exp.epoch       = epoch
-        exp.stepNumber  = 0
+        # exp.stepNumber  = 0
 
+        
         for step, (x, y) in enumerate(tqdm(train_dataset)):
-            loss     = exp.step(x, y)
+
+            loss = exp.step(x, y)
 
             if step % otherParams['printEvery'] == 0:
-                testLoss, counts = 0, 0
-                for xt, yt in tqdm( test_dataset ):
-                    testLoss += exp.eval(xt, yt).numpy()
-                    counts += 1
-                testLoss /= counts
-                tqdm.write(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {testLoss:10.04e}')
-            
+                trainAcc = exp.catAccTrain.result().numpy()
+                tqdm.write(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {trainAcc:10.04e}')
+                
             # if step % otherParams['chkptEvery'] == 0:
             #     exp.checkPoint()
 
-
-        print(f'\n {epoch:05d} | {step:05d} | {loss:10.4e} \n')
+        exp.catAccTest.reset_states()
+        for xt, yt in tqdm( test_dataset ):
+            testAcc = exp.eval(xt, yt)
+        
+        print(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {trainAcc:10.04e} | {testAcc:10.04e}')
     
     # ------------- Save the model ---------------------------
     exp.saveModel()

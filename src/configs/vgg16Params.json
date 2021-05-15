@@ -1,14 +1,14 @@
 {
     "ModelParams": {
         
-        "name": "VGG11",
+        "name": "VGG16",
         
         "convLayers" : [
-            { "nFilters": 64,  "nConvs": 1, "name": "convBlock_001" }, 
-            { "nFilters": 128, "nConvs": 1, "name": "convBlock_002" }, 
-            { "nFilters": 256, "nConvs": 2, "name": "convBlock_003" }, 
-            { "nFilters": 512, "nConvs": 2, "name": "convBlock_004" }, 
-            { "nFilters": 512, "nConvs": 2, "name": "convBlock_005" }
+            { "nFilters": 64,  "nConvs": 2, "name": "convBlock_001" }, 
+            { "nFilters": 128, "nConvs": 2, "name": "convBlock_002" }, 
+            { "nFilters": 256, "nConvs": 3, "name": "convBlock_003" }, 
+            { "nFilters": 512, "nConvs": 3, "name": "convBlock_004" }, 
+            { "nFilters": 512, "nConvs": 3, "name": "convBlock_005" }
         ],
 
         "denseLayers" : [
@@ -19,7 +19,7 @@
     },
 
     "OptimizerParams": {
-        "learning_rate": 1e-4
+        "learning_rate": 0.001
     },
 
     "LossParams" : {
@@ -28,8 +28,8 @@
 
     "OtherParams": {
         "BATCHSIZE": 64,
-        "EPOCHS": 100,
-        "printEvery": 20,
+        "EPOCHS": 2,
+        "printEvery": 10,
         "chkptEvery": 10,
         "exptBaseFolder": "../exptLogs"
     }
