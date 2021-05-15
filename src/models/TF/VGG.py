@@ -11,7 +11,7 @@ class ConvGroup2(layers.Layer):
 
     def __init__(self, nFilters=64, nConvs = 1, name='ConvGroup1'):
 
-        super(self, CongGrpup1).__init__(name=name):
+        super(self, CongGrpup1).__init__(name=name)
 
         self.convLayers = [ Conv2D(  filters=nFilters, kernel_size=(3,3), padding='same', 
                                      activation='relu', name=f'{name}-conv_{i+1}' )   for i in range(nConvs)]

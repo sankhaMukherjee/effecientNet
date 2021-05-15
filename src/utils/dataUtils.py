@@ -30,12 +30,11 @@ def getMNISTData(reshape=True):
 # Imagenette2-160
 # ----------------------------------------------------------------------
 
-def generateImageNette(folder):
+def generateImageNette(folder, newFolder):
 
     builder = tfds.folder_dataset.ImageFolder(root_dir = folder)
     print(builder.info)
-    
-    newFolder = folder + '-160'
+
     os.makedirs( newFolder, exist_ok=True )
 
     # ------------------------------------------------
@@ -110,18 +109,27 @@ def convertFilesToOHE(folder, fileName, categories):
 
     return
 
+def getImageNetteData():
+
+    folder = '/home/sankha/Documents/mnt/hdd01/data/imagenette2-160-160'
+    
+    x_train = np.load( os.path.join(folder, 'trainX.npy') )
+    x_test = np.load( os.path.join(folder, 'testX.npy') )
+
+    y_train = np.load( os.path.join(folder, 'trainY_OHE.npy') )
+    y_test = np.load( os.path.join(folder, 'testY_OHE.npy') )
+
+    return (x_train, y_train), (x_test, y_test)
+
 def main():
 
     folder    = '/home/sankha/Documents/mnt/hdd01/data/imagenette2-160'
     folderNew = folder + '-160'
-    # generateImageNette(folder)
+    # generateImageNette(folder, folderNew)
 
     categories = [list(range(10))]
     convertFilesToOHE( folderNew, 'trainY.npy', categories )
     convertFilesToOHE( folderNew, 'testY.npy', categories )
-
-
-    
 
     return
 
