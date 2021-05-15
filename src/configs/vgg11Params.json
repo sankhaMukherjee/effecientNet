@@ -27,7 +27,7 @@
     },
 
     "OtherParams": {
-        "BATCHSIZE": 8,
+        "BATCHSIZE": 64,
         "EPOCHS": 2,
         "printEvery": 10,
         "chkptEvery": 10,

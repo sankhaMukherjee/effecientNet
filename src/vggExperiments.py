@@ -11,6 +11,7 @@ from utils.ExperimentClassify     import ExperimentClassify
 from utils                        import dataUtils  as dU
 from models.TF.VGG                import VGG
 from tensorflow.keras.optimizers  import Adam
+from tqdm                         import tqdm
 
 
 def main():
@@ -29,6 +30,10 @@ def main():
     (x_train, y_train), (x_test, y_test) = dU.getImageNetteData()
     train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
     train_dataset = train_dataset.batch(otherParams['BATCHSIZE'])    
+    test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+    test_dataset = test_dataset.batch(otherParams['BATCHSIZE'])    
+
+
 
     # ------------- Generate an Experiment --------------------------
     print('------------- [Preparing the Experiment] ---------------------')
@@ -47,12 +52,16 @@ def main():
         exp.epoch       = epoch
         exp.stepNumber  = 0
 
-        for step, (x, y) in enumerate(train_dataset):
+        for step, (x, y) in enumerate(tqdm(train_dataset)):
             loss     = exp.step(x, y)
 
             if step % otherParams['printEvery'] == 0:
-                print(f'{epoch:05d} | {step:05d} | {loss:10.4e} ')
-                # testLoss = exp.eval(x_test, y_test)
+                testLoss, counts = 0, 0
+                for xt, yt in tqdm( test_dataset ):
+                    testLoss += exp.eval(xt, yt).numpy()
+                    counts += 1
+                testLoss /= counts
+                tqdm.write(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {testLoss:10.04e}')
             
             # if step % otherParams['chkptEvery'] == 0:
             #     exp.checkPoint()
