@@ -14,7 +14,7 @@ from sklearn.preprocessing import OneHotEncoder
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
-def getMNISTData(reshape=True):
+def getMNISTData(reshape=True, OHE=False):
 
     # Create the data
     mnist = tf.keras.datasets.mnist
@@ -27,6 +27,11 @@ def getMNISTData(reshape=True):
     if reshape:
         x_train = x_train.reshape(-1, 784).astype('float32')
         x_test  = x_test.reshape(-1, 784).astype('float32')
+
+    if OHE:
+        categories = [list(range(10))]
+        y_train = convertLabelsToOHE(y_train, categories)
+        y_test = convertLabelsToOHE(y_test,   categories)
 
     return (x_train, y_train), (x_test, y_test)
     

@@ -13,6 +13,51 @@ allow for further optimizaiton through Neural Architecture Search.
 This is not intended to be production-level code, and no guarantees are made of its reliability.
 Use it at your own risk.
 
+# 2. Dataset
+
+This example uses a couple of datasets. They are as folliws:
+
+## 2.1. [MNIST](http://yann.lecun.com/exdb/mnist/)
+
+This is the well-known MNIST dataset. TensorFlow already comes with a dataset, and this is something
+you sue directly, without needing to download any data. The dataset will be autimatically downloaded
+for you to use when you need it. The file 
+[`src/utils/dataUtils.py`](https://github.com/sankhaMukherjee/effecientNet/blob/master/src/utils/dataUtils.py) 
+contains a function [`getMNISTData`](https://github.com/sankhaMukherjee/effecientNet/blob/f7009249f49c395194ebadd0737fc0dcbad97f40/src/utils/dataUtils.py#L17) 
+that will allow you to read the data directly. The following transformations are automatically performed:
+
+1. scale the data to the limits [0,1]
+2. If needed, reshape the x-values to [-1, 748] so that it can be passed to a Dense network directly.
+3. If a classification is required, the y-values can be converted to OHE data directly
+
+## 2.2. [Imagenette](https://github.com/fastai/imagenette)
+
+A smaller version (10 classes) of the popular [Imagenet](https://www.image-net.org/) dataset which
+is also present. This is typically used for rapid prototyping on new ideas, since the original
+Imagenet dataset is rather big, and takes a long time to tune. The version of dataset used is the
+[160 px](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz) imagenette dataset, which
+you will have to separately download. To use this dataset, follow the steps below:
+
+### 2.2.1. Download and extract the data
+
+1. go to a favourite folder location: `cd <folder location>`
+2. download the data: `wget https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-160.tgz`
+3. unzip the data: `tar zxvf imagenette2-160.tgz`
+
+### 2.2.2. Normalize the data
+
+The imagenette data comprises of data that has been converted to format such that the shortest side is
+160 pixles, and the aspect ratio is maintained. This results in a set of uneven-sized data. For this
+case, a simple normalization has been performed - the image is cropped into a 160x160 image. Note that
+this is not the ideal way of normalizing the images. However, for this simple set of experiments this
+should be sufficient. For normalizing the data, follow the steps:
+
+1. In the `main()` function of the file  [`src/utils/dataUtils.py`](https://github.com/sankhaMukherjee/effecientNet/blob/master/src/utils/dataUtils.py), change the folder to the location of the data where imagenette data is present. 
+2. Run this file: `python3 dataUtils.py`
+3. A new folder will be created with the name `imagenette2-160-160`
+4. In the `getImageNetteData()` function of the same file, update the folder so that it points to this new file.
+
+Now you should be ready to run the examples ...
 
 # Examples
 
