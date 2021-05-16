@@ -1,7 +1,7 @@
 {
     "ModelParams": {
         
-        "name": "VGG16",
+        "name": "VGG-16",
         
         "convLayers" : [
             { "nFilters": 64,  "nConvs": 2, "name": "convBlock_001" }, 
@@ -19,7 +19,7 @@
     },
 
     "OptimizerParams": {
-        "learning_rate": 0.001
+        "learning_rate": 5e-5
     },
 
     "LossParams" : {
@@ -27,8 +27,8 @@
     },
 
     "OtherParams": {
-        "BATCHSIZE": 64,
-        "EPOCHS": 2,
+        "BATCHSIZE": 16,
+        "EPOCHS": 20,
         "printEvery": 10,
         "chkptEvery": 10,
         "exptBaseFolder": "../exptLogs"

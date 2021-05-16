@@ -1,7 +1,7 @@
 {
     "ModelParams": {
         
-        "name": "VGG11",
+        "name": "VGG-11",
         
         "convLayers" : [
             { "nFilters": 64,  "nConvs": 1, "name": "convBlock_001" }, 
@@ -28,7 +28,7 @@
 
     "OtherParams": {
         "BATCHSIZE": 64,
-        "EPOCHS": 100,
+        "EPOCHS": 10,
         "printEvery": 20,
         "chkptEvery": 10,
         "exptBaseFolder": "../exptLogs"

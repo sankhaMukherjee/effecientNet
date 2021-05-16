@@ -23,7 +23,7 @@ class ExperimentClassify:
         self.catAccTest  = CategoricalAccuracy()
         self.catAccTrain = CategoricalAccuracy()
 
-        self.exptFolder  = os.path.join( exptConfig['OtherParams']['exptBaseFolder'], self.now )
+        self.exptFolder  = os.path.join( exptConfig['OtherParams']['exptBaseFolder'], self.now, exptConfig['ModelParams']['name'] )
         self.modelFolder = os.path.join( self.exptFolder, 'model' )
         self.chkptFolder = os.path.join( self.exptFolder, 'checkpoints' )
 

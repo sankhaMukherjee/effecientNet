@@ -14,14 +14,35 @@ from models.TF.VGG                import VGG
 from tensorflow.keras.optimizers  import Adam
 from tqdm                         import tqdm
 
-
 def main():
 
-    name = 'VGG-11'
+    configFiles = {
+        "VGG-11" : 'configs/vgg11Params.json',
+        "VGG-13" : 'configs/vgg13Params.json',
+        "VGG-16" : 'configs/vgg16Params.json',
+        "VGG-19" : 'configs/vgg19Params.json',
+    }
+
+    result = []
+    for name, configFile in configFiles.items():
+        name, trainAcc, maxTrainAccs, testAcc, maxTestAccs = runVGGModel( name, configFile )
+        result.append(f'{name} | {trainAcc*100:7.3f} | {maxTrainAccs*100:7.3f} | {testAcc*100:7.3f} | {maxTrainAccs*100:7.3f}')
+
+    result = '\n'.join( result )
+    print(result)
+
+
+    return
+
+def runVGGModel(name, configFile):
+
+    print(f'+----------------------------------------------------------------')
+    print(f'| {name} ')
+    print(f'+----------------------------------------------------------------')
 
     # ------------- Generate the Parameters --------------------------
     print('------------- [Generating the basic parameters] --------------')
-    baseConfigs     = json.load(open('configs/vgg11Params.json'))
+    baseConfigs     = json.load(open(configFile))
     modelParams     = baseConfigs['ModelParams']
     optimizerParams = baseConfigs['OptimizerParams']
     otherParams     = baseConfigs['OtherParams']
@@ -34,8 +55,6 @@ def main():
     test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))
     test_dataset = test_dataset.batch(otherParams['BATCHSIZE'])    
 
-
-
     # ------------- Generate an Experiment --------------------------
     print('------------- [Preparing the Experiment] ---------------------')
     model = VGG( modelParams, name=modelParams['name'] )
@@ -47,6 +66,8 @@ def main():
     exp.createModelSummary( x_test[:1,:,:,:] )
 
     # ------------- Run the Experiment ---------------------------
+
+    trainAccs, testAccs = [], []
     print('------------- [Starting a run] -----------------------------')
     for epoch in range( otherParams['EPOCHS'] ):
 
@@ -62,6 +83,7 @@ def main():
             if step % otherParams['printEvery'] == 0:
                 trainAcc = exp.catAccTrain.result().numpy()
                 tqdm.write(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {trainAcc:10.04e}')
+                trainAccs.append(trainAcc)
                 
             # if step % otherParams['chkptEvery'] == 0:
             #     exp.checkPoint()
@@ -70,15 +92,13 @@ def main():
         for xt, yt in tqdm( test_dataset ):
             testAcc = exp.eval(xt, yt)
         
+        testAccs.append(testAccs)
         print(f'{epoch:05d} | {step:05d} | {loss:10.4e} | {trainAcc:10.04e} | {testAcc:10.04e}')
     
     # ------------- Save the model ---------------------------
-    exp.saveModel()
+    # exp.saveModel()
 
-
-    
-
-    return
+    return name, trainAcc, max(trainAccs), testAcc, max(testAccs)
 
 if __name__ == "__main__":
     main()
