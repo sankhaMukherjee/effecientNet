@@ -23,7 +23,7 @@ This is the well-known MNIST dataset. TensorFlow already comes with a dataset, a
 you sue directly, without needing to download any data. The dataset will be autimatically downloaded
 for you to use when you need it. The file 
 [`src/utils/dataUtils.py`](https://github.com/sankhaMukherjee/effecientNet/blob/master/src/utils/dataUtils.py) 
-contains a function [`getMNISTData`](https://github.com/sankhaMukherjee/effecientNet/blob/f7009249f49c395194ebadd0737fc0dcbad97f40/src/utils/dataUtils.py#L17) 
+contains a function `getMNISTData()` 
 that will allow you to read the data directly. The following transformations are automatically performed:
 
 1. scale the data to the limits [0,1]
