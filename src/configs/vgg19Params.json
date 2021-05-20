@@ -28,7 +28,7 @@
 
     "OtherParams": {
         "BATCHSIZE": 8,
-        "EPOCHS": 60,
+        "EPOCHS": 30,
         "printEvery": 10,
         "chkptEvery": 10,
         "exptBaseFolder": "../exptLogs"
