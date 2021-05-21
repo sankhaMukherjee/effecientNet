@@ -22,9 +22,9 @@ def main():
 
     configFiles = {
         "VGG-11" : 'configs/vgg11Params.json',
-        # "VGG-13" : 'configs/vgg13Params.json',
-        # "VGG-16" : 'configs/vgg16Params.json',
-        # "VGG-19" : 'configs/vgg19Params.json',
+        "VGG-13" : 'configs/vgg13Params.json',
+        "VGG-16" : 'configs/vgg16Params.json',
+        "VGG-19" : 'configs/vgg19Params.json',
     }
 
     colors = [ plt.cm.Paired(i) for i in np.linspace(0, 1, 14)[1:-1]]
@@ -36,7 +36,7 @@ def main():
     for name, configFile in configFiles.items():
 
         name, trainAcc, maxTrainAccs, trainAccs, testAcc, maxTestAccs, testAccs = runVGGModel( name, configFile )
-        result.append(f'|{name:20s}| {trainAcc*100:10.3f} | {maxTrainAccs*100:14.3f} | {testAcc*100:10.3f} | {maxTrainAccs*100:14.3f} |')
+        result.append(f'|{name:20s}| {trainAcc*100:10.3f} | {maxTrainAccs*100:14.3f} | {testAcc*100:10.3f} | {maxTestAccs*100:14.3f} |')
 
         plt.plot( testAccs, ls='-',  color=colors[ plotNumber ], label=f'{name} (test)' )
         plotNumber += 1 

@@ -59,14 +59,30 @@ should be sufficient. For normalizing the data, follow the steps:
 
 Now you should be ready to run the examples ...
 
-# Examples
+# Baseline Examples
 
-The following examples are present
+## VGG architectures
 
+VGG architectures as originally described do not have batch normalization and dropout and hence are prone
+to overfitting. Several of the VGG architectures are very similar to one another and can be generated through
+the use of a base model defiition 
+(src/models/TF/VGG.py)[https://github.com/sankhaMukherjee/effecientNet/blob/master/src/models/TF/VGG.py]
+and through their respective config files:
 
-|         command        | model | backend | data | comments |
-|------------------------|-------|---------|------|----------|
-|                        |       |         |      |          |
+ - (src/configs/vgg11Params.json)[https://github.com/sankhaMukherjee/effecientNet/blob/master/src/configs/vgg11Params.json]
+ - (src/configs/vgg13Params.json)[https://github.com/sankhaMukherjee/effecientNet/blob/master/src/configs/vgg13Params.json]
+ - (src/configs/vgg16Params.json)[https://github.com/sankhaMukherjee/effecientNet/blob/master/src/configs/vgg16Params.json]
+ - (src/configs/vgg19Params.json)[https://github.com/sankhaMukherjee/effecientNet/blob/master/src/configs/vgg19Params.json]
+
+They can be evaluated with the command (within the `src` folder): `python3 vggExperiments.py`
+
+|    model name      | train acc. | max train acc. |  test acc. |
+|--------------------|------------|----------------|------------|
+|VGG-11              |     99.166 |         99.556 |     67.516 |
+|VGG-13              |     99.609 |         99.609 |     64.459 |
+|VGG-16              |     98.944 |         99.261 |     54.293 |
+|VGG-19              |     98.659 |         98.754 |     57.478 |
+
 
 
 # Requirements
