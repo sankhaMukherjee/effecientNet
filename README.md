@@ -85,7 +85,10 @@ The following are on the [Imagenette](https://github.com/fastai/imagenette) data
 |VGG-16              |     98.944 |         99.261 |     54.293 |
 |VGG-19              |     98.659 |         98.754 |     57.478 |
 
-Some results are shown below
+Some results for the train and test accuracies are shown below:
+
+![vgg results](https://raw.githubusercontent.com/sankhaMukherjee/effecientNet/master/results/vggResults.png)
+
 
 # Requirements
 
